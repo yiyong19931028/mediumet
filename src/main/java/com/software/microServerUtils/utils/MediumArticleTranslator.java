@@ -48,6 +48,7 @@ public class MediumArticleTranslator {
 
         Document doc = Jsoup.connect(MEDIUM_URL).get();
 
+
         Elements articles = doc.select("a.postArticle-readMore");
         for (Element article : articles) {
             String articleUrl = article.attr("href");
