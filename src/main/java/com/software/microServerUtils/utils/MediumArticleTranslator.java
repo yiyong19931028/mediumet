@@ -69,6 +69,12 @@ public class MediumArticleTranslator {
         return articleText;
     }
 
+    /**
+     * 对其的数据进行翻译
+     * @param articleText
+     * @return
+     * @throws IOException
+     */
     private static String translateArticleText(String articleText) throws IOException {
         JSONObject requestBody = new JSONObject();
         requestBody.put("text", articleText);
@@ -95,48 +101,51 @@ public class MediumArticleTranslator {
         return translatedText;
     }
 
+    /**
+     * 保存对应pdf文件·1
+     * @param articleUrl
+     * @param articleText
+     * @param translatedText
+     * @throws IOException
+     */
     private static void saveArticleAsPdf(String articleUrl, String articleText, String translatedText) throws IOException {
-        // Create a new PDF document
+
         PDDocument document = new PDDocument();
 
-        // Create a new page in the document
+
         PDPage page = new PDPage();
         document.addPage(page);
 
-        // Create a content stream for the page
         PDPageContentStream contentStream = new PDPageContentStream(document, page);
 
-        // Set the font for the content stream
         contentStream.setFont(PDType1Font.HELVETICA, 12);
 
-        // Write the article text to the content stream
         contentStream.beginText();
         contentStream.showText(articleText);
         contentStream.endText();
 
-        // Write the translated text to the content stream
         contentStream.beginText();
         contentStream.newLineAtOffset(20, -20);
         contentStream.showText(translatedText);
         contentStream.endText();
 
-        // Close the content stream
         contentStream.close();
 
-        // Save the PDF document to a file
         String fileName = articleUrl.substring(articleUrl.lastIndexOf('/') + 1) + ".pdf";
         document.save(new File(OUTPUT_FOLDER, fileName));
 
-        // Close the PDF document
         document.close();
     }
 
+    /**
+     * 创建zip文件
+     * @param articleUrls
+     * @throws IOException
+     */
     private static void createZipFile(List<String> articleUrls) throws IOException {
-        // Create a ZIP output stream
-        FileOutputStream fos = new FileOutputStream(OUTPUT_FOLDER + "/articles.zip");
+                FileOutputStream fos = new FileOutputStream(OUTPUT_FOLDER + "/articles.zip");
         ZipOutputStream zos = new ZipOutputStream(fos);
 
-        // Add each PDF file to the ZIP output stream
         for (String articleUrl : articleUrls) {
             String fileName = articleUrl.substring(articleUrl.lastIndexOf('/') + 1) + ".pdf";
             File file = new File(OUTPUT_FOLDER, fileName);
@@ -151,7 +160,6 @@ public class MediumArticleTranslator {
             fis.close();
         }
 
-        // Close the ZIP output stream
         zos.close();
     }
 }
