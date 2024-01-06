@@ -1,0 +1,5 @@
+spring:
+  application:
+    name: yiyong
+server:
+  port: 8080
